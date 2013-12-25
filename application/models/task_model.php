@@ -107,6 +107,7 @@ class Task_model extends CI_Model {
     }
     function members($term_id){
         $where=array('term_id'=>$term_id);
+        $this->db->order_by('reader','ASC');
         $tasks=$this->db->get_where($this->table_name,$where)->result_array();
         $members=array();
         foreach ($tasks as $task) {

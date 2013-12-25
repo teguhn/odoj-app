@@ -23,6 +23,11 @@
 		<br/>
 		<br/>
 		<span>Pilih nama Anda untuk setor:</span>		
+		<div class="form-group">
+		    <div class="col-xs-12">
+		       <?=form_submit('submit', 'Setor','class="btn btn-success btn-lg btn-block"'); ?>
+			</div>
+		</div>
 		<?php
 			foreach ($tasks as $key=>$task) :
 				control_open('Juz #'.$key,'','col-xs-4 col-md-2','col-xs-8 col-md-10');
