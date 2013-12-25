@@ -10,7 +10,7 @@ Copy text (untuk di group chat):<br/>
 <textarea rows="35" cols="50">
 URL: <?=base_url('term/today/'.$term['id_term'])?>
 
-<?=$term['group_id']?>
+<?=$term['group_id']?> - <?=date('d-m-Y H:i:s')?>
 
 <?php
 ksort($tasks);
@@ -28,6 +28,8 @@ ksort($tasks);
 
 <?php	endforeach;
 ?>
+updated at <?=date('d-m-Y H:i:s')?>
+
 URL: <?=base_url('term/today/'.$term['id_term'])?>
 </textarea>
 <br /> 	

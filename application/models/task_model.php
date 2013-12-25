@@ -46,13 +46,20 @@ class Task_model extends CI_Model {
         return $result;
     }
     function report_individual($start_juz,$juz_now,$task_statuses){
-        $result=array('hutang'=>array());
+        $result=array('hutang'=>array(),'juz_read'=>array());
         for($i=$start_juz;$i<=$juz_now;$i++){
             if($task_statuses[$i-1]==0)
             $result['hutang'][]=$i;
         }
+        for($i=1;$i<=30;$i++){
+            if($task_statuses[$i-1]>0){
+                for($j=1;$j<=$task_statuses[$i-1];$j++){
+                    $result['juz_read'][]=$i;
+                }
+            }
+        }
         $result['khatam']=min($task_statuses);
-        $result['juz_read']=array_sum($task_statuses);
+        //$result['juz_read']=array_sum($task_statuses);
         return $result;
     }
     function init($data){
@@ -85,18 +92,24 @@ class Task_model extends CI_Model {
     function today($term_id){
         $offset = $this->offset_juz($term_id);
         $juz=array();
+        $reports=array();
+        $this->db->order_by('reader','ASC');
         $tasks=$this->db->get_where($this->table_name,array('term_id'=>$term_id))->result_array();
-        foreach ($tasks as $key => $task) {
+        foreach ($tasks as $task) {
             $status=json_decode($task['status']);
             $juz_now=($task['start_juz']+$offset)%30;
             if($juz_now==0)$juz_now=30;
             $juz[$juz_now][]=array(
                 'name'=>$task['reader'],
-                'status'=>$status[$juz_now-1],
+                'status'=>$status[$juz_now-1]
+            );
+            $reports[]=array(
+                'name'=>$task['reader'],
                 'report'=>$this->report_individual($task['start_juz'],$juz_now,$status)
             );
         }
-        return $juz;
+        $result=array('juz'=>$juz,'reports'=>$reports);
+        return $result;
     }
     function offset_juz($term_id){
         $term=$this->db->select('start_date')->get_where('term',array('id_term'=>$term_id))->row_array();

@@ -1,9 +1,9 @@
-<h1><?=$term['group_id']?></h1>
+<h1><a href="<?=base_url('term/today/'.$term['id_term'])?>"><?=$term['group_id']?></a></h1>
 <!-- Nav tabs -->
 <ul class="nav nav-pills">
   <li class="active"><a href="#progress" data-toggle="tab">Hari Ini</a></li>
   <li><a href="#extend" data-toggle="tab">Juz Lainnya</a></li>
-  <li><a href="#report" data-toggle="tab">Laporan</a></li>
+  <li><a href="#report" data-toggle="tab">Statistik</a></li>
 </ul>
 
 <!-- Tab panes -->
@@ -29,8 +29,8 @@
 			</div>
 		</div>
 		<?php
-			ksort($tasks);
-			foreach ($tasks as $key=>$task) :
+			ksort($tasks['juz']);
+			foreach ($tasks['juz'] as $key=>$task) :
 				control_open('Juz #'.$key,'','col-xs-4 col-md-2','col-xs-8 col-md-10');
 				foreach ($task as $reader) :
 					$status=$reader['status']>0 ? ' <span class="badge">'.$reader['status'].'</span>' : '';
@@ -77,40 +77,36 @@
   </div>
   <div class="tab-pane" id="report">
   <h2>Progress angggota</h2>
-	  <div class="table-responsive col-sm-6">
+<p>Banyaknya bacaan yang sudah dibaca:
+<?=$group_report['juz_read']?> juz,
+<?=$group_report['khatam']?> khatam
+</p>
+<div class="table-responsive col-sm-6">
 		<table class="table table-striped">
 			<thead>
 			<tr>
 				<th>Nama</th>
-				<th>hutang</th>
-				<th>Juz dibaca</th>
+				<th>Setoran</th>
+				<th>Hutang</th>
 				<th>Khatam</th>
 			</tr>
 			</thead>
 			<tbody>
-			<?php foreach ($tasks as $key=>$task) : ?>
-				<?php foreach ($task as $reader) :	?>
+			<?php foreach ($tasks['reports'] as $reader) :	?>
 				<tr>
 					<td><?=$reader['name']?></td>
-					<td>
-					<?=($reader['report']['hutang'])?"Juz":"-"?>
-					<?php foreach ($reader['report']['hutang'] as $hutang) {?>
-						#<?=$hutang?> 
-					<?php } ?>
+					<td><span class="glyphicon glyphicon-ok"></span>
+					<?=($reader['report']['juz_read'])?"Juz":"-"?>
+					<?=implode(',',$reader['report']['juz_read'])?>
 					</td>
-					<td><?=$reader['report']['juz_read']?></td>
+					<td><span class="glyphicon glyphicon-remove"></span>
+					<?=($reader['report']['hutang'])?"Juz":"-"?>
+					<?=implode(',',$reader['report']['hutang'])?>
+					</td>
 					<td><?=$reader['report']['khatam']?></td>
 				</tr>
-				<?php endforeach; ?>
 			<?php endforeach; ?>
 			</tbody>
-			<tfoot>
-				<tr>
-					<th colspan="2">Total</th>
-					<th><?=$group_report['juz_read']?></th>
-					<th><?=$group_report['khatam']?></th>
-				</tr>
-			</tfoot>
 		</table>
 	  </div>
   </div>
