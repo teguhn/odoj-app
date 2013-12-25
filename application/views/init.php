@@ -3,7 +3,7 @@
 <?php
 	input_text('Nama Grup','group_id');
 	for($i=1;$i<=30;$i++):
-		input_text('Juz #'.$i,'juz['.$i.']');
+		input_text('Juz #'.$i,'juz['.$i.']','','class="form-control" placeholder="Pisahkan nama dengan tanda koma"');
 	endfor;
 ?>
 <div class="form-group">

@@ -46,10 +46,10 @@ class Task_model extends CI_Model {
         return $result;
     }
     function report_individual($start_juz,$juz_now,$task_statuses){
-        $result=array('utang'=>array());
+        $result=array('hutang'=>array());
         for($i=$start_juz;$i<=$juz_now;$i++){
             if($task_statuses[$i-1]==0)
-            $result['utang'][]=$i;
+            $result['hutang'][]=$i;
         }
         $result['khatam']=min($task_statuses);
         $result['juz_read']=array_sum($task_statuses);
@@ -82,7 +82,7 @@ class Task_model extends CI_Model {
         }
         return $term_id;       
     }
-    function get_today_tasks($term_id){
+    function today($term_id){
         $offset = $this->offset_juz($term_id);
         $juz=array();
         $tasks=$this->db->get_where($this->table_name,array('term_id'=>$term_id))->result_array();
@@ -104,5 +104,24 @@ class Task_model extends CI_Model {
         $curr_date = strtotime(date('Y/m/d'));
         $offset = floor(($curr_date-$start_date)/60/60/24);
         return $offset;        
+    }
+    function members($term_id){
+        $where=array('term_id'=>$term_id);
+        $tasks=$this->db->get_where($this->table_name,$where)->result_array();
+        $members=array();
+        foreach ($tasks as $task) {
+            $members[$task['reader']]=$task['reader'];
+        }
+        return $members;
+    }
+    function update_task($term_id,$update_reader,$update_juz){
+        $where=array('reader'=>$update_reader,'term_id'=>$term_id);
+        $task=$this->db->get_where($this->table_name,$where)->row_array();
+        $offset=$this->offset_juz($term_id);
+        $juz_now=($task['start_juz']+$offset)%30;
+        if($juz_now==0)$juz_now=30;
+        $delta=$update_juz-$juz_now;
+        $task['start_juz']+=$delta;
+        return $this->db->update($this->table_name,$task,$where);
     }
 }

@@ -15,7 +15,7 @@
 		<meta property="og:image" content="{{meta_image}}" />
 		{{metas}}
 		<style>
-			body{padding-top:60px;}
+			body{padding-top:70px;}
 		</style>
 		{{styles}}
 		<!-- <link rel="stylesheet" type="text/css" href="<?= $base_url; ?>assets/css/style.css?v=<?= FILE_VERSION; ?>"/>		 -->

@@ -6,18 +6,19 @@ class Term extends CI_Controller {
         $this->load->model('term_model');
         $this->load->model('task_model');
         $this->scripts[]='bootstrap.min';
+        $this->scripts[]='script';
         $this->styles[]='bootstrap.min';
-        $this->header=$this->load->view('template/front/navbar',TRUE);
     }
     function index($term_id=NULL){
+        $this->header=$this->load->view('template/front/navbar',TRUE);
         if($term_id){
-            $this->get_today_tasks($term_id);
+            $this->today($term_id);
         }else{
             $data['terms']=$this->term_model->get_all_terms();
             $this->load->view('all_terms',$data);
         }
     }
-    function init_term(){
+    function init(){
         if($_POST){
             // print_r($_POST);
             $juz=$this->input->post('juz');
@@ -31,29 +32,14 @@ class Term extends CI_Controller {
             );
             // print_r($term_data);
             $term_id=$this->task_model->init($term_data);
-            redirect(base_url('term/get_today_tasks/'.$term_id));
+            redirect(base_url('term/today/'.$term_id));
         }else{
+            $this->header=$this->load->view('template/front/navbar',TRUE);
             $data['action']="";
             $this->load->view('init',$data);
         }
     }
-    function report_term($term_id){
-        print_r($this->task_model->report_term($term_id));
-    }
-    function report_individual($term_id,$name){
-        print_r($this->task_model->report_individual($term_id,$name));
-    }
-    function progress($term_id,$name){
-        print_r($this->task_model->progress($term_id,$name));
-    }
-    function extend(){
-        $juz=array();
-            for($i=0;$i<10;$i++){
-                $juz[$i]=1;
-            }
-        print_r($this->task_model->extend(2,'tiga',$juz));
-    }
-    function get_today_tasks($term_id){
+    function today($term_id){
         if($_POST){
             // print_r($_POST);
             $reader        =$this->input->post('reader');
@@ -63,11 +49,29 @@ class Term extends CI_Controller {
             if($reader)$this->task_model->progress($term_id,$reader);
             if($extend_juz)$this->task_model->extend($term_id,$extend_reader,$extend_juz);
         }
+            $this->header=$this->load->view('template/front/navbar',TRUE);
             $data['group_report']=$this->task_model->report_term($term_id);
             $data['term']=$this->term_model->get_term($term_id);
-            $data['tasks']=$this->task_model->get_today_tasks($term_id);
-            $data['action']="";
+            $data['tasks']=$this->task_model->today($term_id);
+            $data['members']=$this->task_model->members($term_id);
+            $data['action']=base_url('term/today/'.$term_id);
+            $data['action_update']=base_url('term/update_task/'.$term_id);
             $data['hidden']['term_id']=$term_id;
             $this->load->view('today_tasks',$data);
+    }
+    function update_task(){
+        if($_POST){
+            $term_id       =$this->input->post('term_id');
+            $update_reader =$this->input->post('update_reader');
+            $update_juz    =$this->input->post('update_juz');
+            $update        =$this->task_model->update_task($term_id,$update_reader,$update_juz);
+        }
+        redirect(base_url('term/today/'.$term_id));
+    }
+    function export($term_id){
+        $this->layout=FALSE;
+        $data['term']=$this->term_model->get_term($term_id);
+        $data['tasks']=$this->task_model->today($term_id);
+        $this->load->view('export',$data);        
     }
 }
