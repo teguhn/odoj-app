@@ -24,4 +24,12 @@ class Feedback extends CI_Controller {
 		}
     	echo json_encode($response);
     }
+    function get_all(){
+    	$result=$this->db->get('feedback')->result_array();
+    	echo '<ul>';
+    	foreach ($result as $fb) {
+    		echo '<li>'.$fb['email'].': '.$fb['feedback'].' ('.$fb['timestamp'].')</li>';
+    	}
+    	echo '</ul>';
+    }
 }

@@ -46,7 +46,10 @@ class Term extends CI_Controller {
             $term_id       =$this->input->post('term_id');
             $extend_juz    =$this->input->post('extend');
             $extend_reader =$this->input->post('extend_reader');
-            if($reader)$this->task_model->progress($term_id,$reader);
+            if($reader){
+                $this->task_model->progress($term_id,$reader);
+                redirect(base_url('term/export/'.$term_id));
+            }
             if($extend_juz)$this->task_model->extend($term_id,$extend_reader,$extend_juz);
         }
             $this->header=$this->load->view('template/front/navbar',TRUE);

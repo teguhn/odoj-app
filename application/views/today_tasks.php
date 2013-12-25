@@ -29,6 +29,7 @@
 			</div>
 		</div>
 		<?php
+			ksort($tasks);
 			foreach ($tasks as $key=>$task) :
 				control_open('Juz #'.$key,'','col-xs-4 col-md-2','col-xs-8 col-md-10');
 				foreach ($task as $reader) :
