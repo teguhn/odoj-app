@@ -7,14 +7,14 @@
   <body>
 <a href="<?=base_url('term/today/'.$term['id_term'])?>"><< Back</a><br/>
 Copy text (untuk di group chat):<br/>
-<textarea rows="35" cols="50">
+<textarea rows="35" cols="45">
 URL: <?=base_url('term/today/'.$term['id_term'])?>
 
-<?=$term['group_id']?> - <?=date('d-m-Y H:i:s')?>
+<?=$term['group_id']?> - <?=date('d/m/Y H:i:s')?>
 
 <?php
-ksort($tasks);
-	foreach ($tasks as $key=>$task) :
+ksort($tasks['juz']);
+	foreach ($tasks['juz'] as $key=>$task) :
 		echo 'Juz '.$key.': ';
 		$readers=array();
 		foreach ($task as $reader) :
@@ -28,7 +28,7 @@ ksort($tasks);
 
 <?php	endforeach;
 ?>
-updated at <?=date('d-m-Y H:i:s')?>
+exported at <?=date('d/m/Y H:i:s')?>
 
 URL: <?=base_url('term/today/'.$term['id_term'])?>
 </textarea>
