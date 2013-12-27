@@ -8,6 +8,7 @@ class Term extends CI_Controller {
         $this->scripts[]='bootstrap.min';
         $this->scripts[]='script';
         $this->styles[]='bootstrap.min';
+        $this->title="ODOJ (beta)";
     }
     function index($term_id=NULL){
         $this->header=$this->load->view('template/front/navbar',TRUE);
@@ -48,13 +49,14 @@ class Term extends CI_Controller {
             $extend_reader =$this->input->post('extend_reader');
             if($reader){
                 $this->task_model->progress($term_id,$reader);
-                redirect(base_url('term/export/'.$term_id));
+                redirect(base_url('term/today/'.$term_id.'?export=1'));
             }
             if($extend_juz)$this->task_model->extend($term_id,$extend_reader,$extend_juz);
         }
             $this->header=$this->load->view('template/front/navbar',TRUE);
             $data['group_report']=$this->task_model->report_term($term_id);
             $data['term']=$this->term_model->get_term($term_id);
+            $this->title.=' - '.$data['term']['group_id'];
             $data['tasks']=$this->task_model->today($term_id);
             $data['members']=$this->task_model->members($term_id);
             $data['action']=base_url('term/today/'.$term_id);
@@ -72,7 +74,7 @@ class Term extends CI_Controller {
         redirect(base_url('term/today/'.$term_id));
     }
     function export($term_id){
-        $this->layout=FALSE;
+        $this->header=$this->load->view('template/front/navbar',TRUE);
         $data['term']=$this->term_model->get_term($term_id);
         $data['tasks']=$this->task_model->today($term_id);
         $this->load->view('export',$data);        

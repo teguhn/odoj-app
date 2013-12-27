@@ -16,10 +16,13 @@
 			<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#update">
 			 <span class="glyphicon glyphicon-edit"></span> Ubah jadwal
 			</button>
-		  <a target="_blank" href="<?=base_url('term/export/'.$term['id_term'])?>" class="btn btn-danger btn-sm">
+			<button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#exportText">
+			 <span class="glyphicon glyphicon-file"></span> Copy text jadwal
+			</button>
+<!-- 		  <a target="_blank" href="<?=base_url('term/export/'.$term['id_term'])?>" class="btn btn-danger btn-sm">
 			<span class="glyphicon glyphicon-file"></span> Copy text jadwal
 		  </a>
-		</div>
+ -->		</div>
 		<br/>
 		<br/>
 		<span>Pilih nama Anda untuk setor:</span>		
@@ -141,3 +144,54 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <?=form_close() ?>
+<!-- Modal -->
+<div class="modal fade" id="exportText" tabindex="-1" role="dialog" aria-labelledby="exportTextLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="exportTextLabel">Copy text:</h4>
+      </div>
+      <div class="modal-body">
+			<textarea class="form-control" rows="35" cols="45">
+URL: <?=base_url('term/today/'.$term['id_term'])?>
+
+<?=$term['group_id']?> - <?=date('d/m/Y H:i:s')?>
+
+<?php
+ksort($tasks['juz']);
+	foreach ($tasks['juz'] as $key=>$task) :
+		echo 'Juz '.$key.': ';
+		$readers=array();
+		foreach ($task as $reader) :
+			if($reader['status']){
+				$readers[]=$reader['name']."(ok)";
+			}else{
+				$readers[]=$reader['name'];
+			}
+		endforeach;
+		echo implode(', ', $readers);?>
+
+<?php	endforeach;
+?>
+exported at <?=date('d/m/Y H:i:s')?>
+
+URL: <?=base_url('term/today/'.$term['id_term'])?>
+</textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script type="text/javascript">
+	$(function(){
+		<?php if(isset($_GET['export'])): ?>
+			$('#exportText').modal();
+		<?php endif; ?>
+		$('#exportText').find('textarea').on('click',function(){
+			$(this).select();	
+		});
+	});
+</script>
