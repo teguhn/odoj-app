@@ -60,16 +60,25 @@ class Term extends CI_Controller {
             $data['tasks']=$this->task_model->today($term_id);
             $data['members']=$this->task_model->members($term_id);
             $data['action']=base_url('term/today/'.$term_id);
-            $data['action_update']=base_url('term/update_task/'.$term_id);
+            $data['action_update']=base_url('term/update_batch/'.$term_id);
             $data['hidden']['term_id']=$term_id;
             $this->load->view('today_tasks',$data);
     }
-    function update_task(){
+    function lapor($term_id){
+            $this->header=$this->load->view('template/front/navbar',TRUE);
+            $data['group_report']=$this->task_model->report_term($term_id);
+            $data['term']=$this->term_model->get_term($term_id);
+            $this->title.=' - '.$data['term']['group_id'];
+            $data['tasks']=$this->task_model->today($term_id);
+            $data['members']=$this->task_model->members($term_id);
+            $this->load->view('lapor',$data);        
+    }
+    function update_batch($term_id){
         if($_POST){
             $term_id       =$this->input->post('term_id');
             $update_reader =$this->input->post('update_reader');
             $update_juz    =$this->input->post('update_juz');
-            $update        =$this->task_model->update_task($term_id,$update_reader,$update_juz);
+            $update        =$this->task_model->update_batch($term_id,$update_reader,$update_juz);
         }
         redirect(base_url('term/today/'.$term_id));
     }
@@ -78,5 +87,20 @@ class Term extends CI_Controller {
         $data['term']=$this->term_model->get_term($term_id);
         $data['tasks']=$this->task_model->today($term_id);
         $this->load->view('export',$data);        
+    }
+    function edit($task_id){
+        $data['task']=$this->task_model->get_task($task_id);
+        $data['status']=json_decode($data['task']->status);
+        $data['action']=base_url('term/update_task/'.$task_id);
+        $data['hidden']['term_id']=$data['task']->term_id;
+        $this->load->view('edit',$data);        
+    }
+    function update_task($task_id){
+        if($_POST){
+            $term_id  =$this->input->post('term_id');
+            $status  =$this->input->post('status');
+            $this->task_model->update_task($task_id,$status);
+            redirect(base_url('term/today/'.$term_id.'?tab=report'));
+        }
     }
 }

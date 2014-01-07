@@ -1,15 +1,15 @@
 <h1><a href="<?=base_url('term/today/'.$term['id_term'])?>"><?=$term['group_id']?></a></h1>
 <!-- Nav tabs -->
 <ul class="nav nav-pills">
-  <li class="active"><a href="#progress" data-toggle="tab">Hari Ini</a></li>
-  <li><a href="#extend" data-toggle="tab">Juz Lainnya</a></li>
+  <li class="active"><a href="#extend" data-toggle="tab">Setor</a></li>
+  <li><a href="#progress" data-toggle="tab">Jadwal Hari Ini</a></li>
   <li><a href="#report" data-toggle="tab">Statistik</a></li>
 </ul>
 
 <!-- Tab panes -->
 <?=form_open($action,'class="form-horizontal"',$hidden); ?>
 <div class="tab-content">
-  <div class="tab-pane active" id="progress">
+  <div class="tab-pane" id="progress">
 		<h2>Jadwal hari ini
 		</h2>
 		<div class="btn-group">
@@ -53,8 +53,13 @@
 		</div>
 	</div>
   </div>
-  <div class="tab-pane" id="extend">
+  <div class="tab-pane active" id="extend">
   	<h2>Setor hutang/tambahan</h2>
+		<div class="form-group">
+		    <div class="col-xs-12">
+		       <?=form_submit('submit', 'Setor','class="btn btn-success btn-lg btn-block"'); ?>
+			</div>
+		</div>
 		<?php
 				control_open('Nama pembaca','extend_reader','col-xs-4 col-md-2','col-xs-8 col-md-4');
 				echo form_dropdown('extend_reader',$members,'','id="extend_reader" class="form-control"');
@@ -84,7 +89,7 @@
 <?=$group_report['juz_read']?> juz,
 <?=$group_report['khatam']?> khatam
 </p>
-<div class="table-responsive col-sm-6">
+<div class="table-responsive">
 		<table class="table table-striped">
 			<thead>
 			<tr>
@@ -97,14 +102,18 @@
 			<tbody>
 			<?php foreach ($tasks['reports'] as $reader) :	?>
 				<tr>
-					<td><?=$reader['name']?></td>
+					<td>
+						<a href="<?=base_url('term/edit/'.$reader['id_task'])?>" data-toggle="modal" data-target="#edit_task">
+							<?=$reader['name']?> (<?=count($reader['report']['juz_read'])?>)
+						</a>
+					</td>
 					<td><span class="glyphicon glyphicon-ok"></span>
 					<?=($reader['report']['juz_read'])?"Juz":"-"?>
-					<?=implode(',',$reader['report']['juz_read'])?>
+					<?=implode(', ',$reader['report']['juz_read'])?>
 					</td>
 					<td><span class="glyphicon glyphicon-remove"></span>
 					<?=($reader['report']['hutang'])?"Juz":"-"?>
-					<?=implode(',',$reader['report']['hutang'])?>
+					<?=implode(', ',$reader['report']['hutang'])?>
 					</td>
 					<td><?=$reader['report']['khatam']?></td>
 				</tr>
@@ -185,10 +194,16 @@ URL: <?=base_url('term/today/'.$term['id_term'])?>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+<!-- Modal -->
+<div class="modal fade" id="edit_task" tabindex="-1" role="dialog" aria-labelledby="updateLabel" aria-hidden="true">
+</div><!-- /.modal -->
 <script type="text/javascript">
 	$(function(){
 		<?php if(isset($_GET['export'])): ?>
 			$('#exportText').modal();
+		<?php endif; ?>
+		<?php if(isset($_GET['tab'])): ?>
+			$('a[href="#<?=$_GET['tab']?>"]').tab('show');
 		<?php endif; ?>
 		$('#exportText').find('textarea').on('click',function(){
 			$(this).select();	

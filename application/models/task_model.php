@@ -45,11 +45,14 @@ class Task_model extends CI_Model {
         $result['juz_read']=array_sum($juz);
         return $result;
     }
-    function report_individual($start_juz,$juz_now,$task_statuses){
+    function report_individual($start_juz,$juz_now,$task_statuses,$offset){
         $result=array('hutang'=>array(),'juz_read'=>array());
-        for($i=$start_juz;$i<=$juz_now;$i++){
-            if($task_statuses[$i-1]==0)
-            $result['hutang'][]=$i;
+        $juz_go=$start_juz+$offset;
+        for($i=$start_juz;$i<=$juz_go;$i++){
+            $j=$i%30;
+            if($j==0)$j=30;
+            if($task_statuses[$j-1]==0)
+            $result['hutang'][]=$j;
         }
         for($i=1;$i<=30;$i++){
             if($task_statuses[$i-1]>0){
@@ -104,8 +107,9 @@ class Task_model extends CI_Model {
                 'status'=>$status[$juz_now-1]
             );
             $reports[]=array(
+                'id_task'=>$task['id_task'],
                 'name'=>$task['reader'],
-                'report'=>$this->report_individual($task['start_juz'],$juz_now,$status)
+                'report'=>$this->report_individual($task['start_juz'],$juz_now,$status,$offset)
             );
         }
         $result=array('juz'=>$juz,'reports'=>$reports);
@@ -128,7 +132,7 @@ class Task_model extends CI_Model {
         }
         return $members;
     }
-    function update_task($term_id,$update_reader,$update_juz){
+    function update_batch($term_id,$update_reader,$update_juz){
         $where=array('reader'=>$update_reader,'term_id'=>$term_id);
         $task=$this->db->get_where($this->table_name,$where)->row_array();
         $offset=$this->offset_juz($term_id);
@@ -137,5 +141,23 @@ class Task_model extends CI_Model {
         $delta=$update_juz-$juz_now;
         $task['start_juz']+=$delta;
         return $this->db->update($this->table_name,$task,$where);
+    }
+    function get_task($task_id){
+        $this->db->where('id_task',$task_id);
+        $result=$this->db->get('task')->row();
+        return $result;
+    }
+    function update_task($task_id,$status){
+        $this->db->where('id_task',$task_id);
+        $updated_status=array();
+        for($i=0;$i<30;$i++) {
+            if(isset($status[$i])){
+                $updated_status[]=array_sum($status[$i]);
+            }else{
+                $updated_status[]=0;
+            }
+        }
+        $data['status']=json_encode($updated_status);
+        return $this->db->update('task',$data);        
     }
 }
