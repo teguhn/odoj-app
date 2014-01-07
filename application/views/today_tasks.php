@@ -182,5 +182,8 @@ URL: <?=base_url('term/today/'.$term['id_term'])?>
 		$('#exportText').find('textarea').on('click',function(){
 			$(this).select();	
 		});
+		$('#edit_task').on('hidden.bs.modal', function () {
+		    $(this).empty().removeData('bs.modal');
+		});	
 	});
 </script>
