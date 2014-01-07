@@ -1,9 +1,8 @@
 <h1><a href="<?=base_url('term/today/'.$term['id_term'])?>"><?=$term['group_id']?></a></h1>
 <!-- Nav tabs -->
 <ul class="nav nav-pills">
-  <li class="active"><a href="#extend" data-toggle="tab">Setor</a></li>
+  <li class="active"><a href="#report" data-toggle="tab">Setoran</a></li>
   <li><a href="#progress" data-toggle="tab">Jadwal Hari Ini</a></li>
-  <li><a href="#report" data-toggle="tab">Statistik</a></li>
 </ul>
 
 <!-- Tab panes -->
@@ -53,42 +52,17 @@
 		</div>
 	</div>
   </div>
-  <div class="tab-pane active" id="extend">
-  	<h2>Setor hutang/tambahan</h2>
-		<div class="form-group">
-		    <div class="col-xs-12">
-		       <?=form_submit('submit', 'Setor','class="btn btn-success btn-lg btn-block"'); ?>
-			</div>
-		</div>
-		<?php
-				control_open('Nama pembaca','extend_reader','col-xs-4 col-md-2','col-xs-8 col-md-4');
-				echo form_dropdown('extend_reader',$members,'','id="extend_reader" class="form-control"');
-				control_close();
-				control_open('Pilih juz','','col-xs-4 col-md-2','col-xs-8 col-md-10');
-				for($i=1;$i<=30;$i++){
-					if($i%10==1){
-						echo '<div class="col-md-4 col-sm-6">';
-					}
-					input_check('extend[]',$i,'Juz #'.$i,false);
-					echo "<br/>";
-					if($i%10==0){
-						echo '</div>';
-					}
-				}
-				control_close();
-		?>
-	<div class="form-group">
-	    <div class="col-xs-12">
-	       <?=form_submit('submit', 'Setor','class="btn btn-success btn-lg btn-block"'); ?>
-		</div>
-	</div>
-  </div>
-  <div class="tab-pane" id="report">
+  <div class="tab-pane active" id="report">
   <h2>Progress angggota</h2>
 <p>Banyaknya bacaan yang sudah dibaca:
 <?=$group_report['juz_read']?> juz,
 <?=$group_report['khatam']?> khatam
 </p>
+<div class="alert alert-info alert-dismissable">
+  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+  <strong>Petunjuk:</strong> Untuk setor bacaan, klik nama Anda, pilih juz yang telah dibaca, lalu klik "Simpan".
+</div>
+
 <div class="table-responsive">
 		<table class="table table-striped">
 			<thead>

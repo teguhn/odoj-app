@@ -45,13 +45,10 @@ class Term extends CI_Controller {
             // print_r($_POST);
             $reader        =$this->input->post('reader');
             $term_id       =$this->input->post('term_id');
-            $extend_juz    =$this->input->post('extend');
-            $extend_reader =$this->input->post('extend_reader');
             if($reader){
                 $this->task_model->progress($term_id,$reader);
                 redirect(base_url('term/today/'.$term_id.'?export=1'));
             }
-            if($extend_juz)$this->task_model->extend($term_id,$extend_reader,$extend_juz);
         }
             $this->header=$this->load->view('template/front/navbar',TRUE);
             $data['group_report']=$this->task_model->report_term($term_id);
@@ -89,6 +86,7 @@ class Term extends CI_Controller {
         $this->load->view('export',$data);        
     }
     function edit($task_id){
+        $this->layout=false;
         $data['task']=$this->task_model->get_task($task_id);
         $data['status']=json_decode($data['task']->status);
         $data['action']=base_url('term/update_task/'.$task_id);
